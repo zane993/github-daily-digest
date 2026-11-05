@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import html as _html
 import re
+import urllib.parse
 
 NO_DL = "未找到可靠的下载量数据"
 
@@ -220,8 +221,8 @@ def build_markdown(data, cfg):
     L.append("")
     L.append("- 程序：`run_daily.py`（Python 标准库，无第三方依赖、无大模型密钥）；配置：`config.json`。")
     L.append("- 统计窗口：%s 往前 %d 天；查询时点：%s。" % (qdate, meta["days"], meta["query_time"]))
-    L.append("- 输出：`GitHub开源资源日报-%s.md` 与 `.html`，本次实际写入目录 %s。"
-             % (qdate, meta.get("output_dir_actual") or cfg.get("output_dir")))
+    L.append("- 输出：`GitHub开源资源日报-%s.md` 与 `.html`；实际写入目录由本地配置决定，不写入报告。"
+             % qdate)
     L.append("- 报告中的事实均标注来源链接与查询日期；第三章的归纳已显式标注为基于本报告数据的判断，不是原始事实。")
     L.append("- 本次采集遇到的访问限制与口径说明见第一节，未对缺失数据作任何推算或补造。")
     L.append("")
@@ -232,9 +233,27 @@ def build_markdown(data, cfg):
 
 def _inline(s):
     s = _html.escape(s, quote=False)
-    s = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)",
-               lambda m: '<a href="%s" target="_blank" rel="noopener">%s</a>'
-               % (_html.escape(m.group(2), quote=True), m.group(1)), s)
+    def render_link(match):
+        label, escaped_url = match.groups()
+        url = _html.unescape(escaped_url)
+        try:
+            parsed = urllib.parse.urlsplit(url)
+            safe = (
+                parsed.scheme.lower() in ("http", "https")
+                and parsed.hostname
+                and not parsed.username
+                and not parsed.password
+                and not any(ord(char) < 32 for char in url)
+                and "\\" not in url
+            )
+        except ValueError:
+            safe = False
+        if not safe:
+            return label
+        return '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>' % (
+            _html.escape(url, quote=True), label)
+
+    s = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", render_link, s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     return s

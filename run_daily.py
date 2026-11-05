@@ -93,7 +93,6 @@ def main(argv=None):
         return 2
 
     out_dir = Path(args.output_dir or cfg["output_dir"])
-    data["meta"]["output_dir_actual"] = str(out_dir)
     md = report.build_markdown(data, cfg)
     htmldoc = report.build_html(md, data)
 

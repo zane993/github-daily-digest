@@ -48,6 +48,9 @@ python run_daily.py --dry-run
 
 # 输出调试日志
 python run_daily.py --verbose
+
+# 运行安全与隐私回归测试
+python -m unittest discover -s tests
 ```
 
 运行日志写入 `logs/`。日志和生成报告默认不纳入版本控制。
