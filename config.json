@@ -1,0 +1,56 @@
+{
+  "_说明": "GitHub 开源资源日报生成器配置。下划线开头的键为说明字段，程序忽略。所有路径用双反斜杠或正斜杠均可。",
+
+  "output_dir": "reports",
+  "filename_prefix": "GitHub开源资源日报",
+  "log_dir": "logs",
+  "window_days": 7,
+  "timezone_offset_hours": 8,
+  "max_items": 14,
+  "search_per_page": 30,
+  "commits_per_page": 100,
+  "releases_per_page": 5,
+  "http_timeout_sec": 25,
+  "github_token_env": "GITHUB_TOKEN",
+  "_token_说明": "不设 GITHUB_TOKEN 时，GitHub core API 限额为 60 次/小时、search 为 10 次/分钟，且共享出口 IP 的 search 常返回 403 rate limit exceeded（本次试运行即遇到）。设置环境变量 GITHUB_TOKEN 后限额为 5000 次/小时，本周新建检索会稳定得多。程序只读取该环境变量，不会把密钥写入任何报告。",
+  "verify_download_links": true,
+  "link_timeout_sec": 10,
+  "_verify_说明": "并发 HEAD 验证报告中的下载地址；失败会把真实状态码写进报告，不会删除链接或补造状态。设为 false 可跳过验证以加快运行。",
+
+  "trending_rss": [
+    "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml",
+    "https://mshibanami.github.io/GitHubTrendingRSS/weekly/all.xml"
+  ],
+  "_trending_说明": "第三方聚合榜，作为关注度上升线索；不是 GitHub 官方 stars this week 数据。pubDate 会写入报告限制说明。",
+
+  "official_trending_url": "https://github.com/trending?since=weekly",
+  "_official_trending_说明": "官方周榜若可访问则优先采用；采集失败会如实记入限制说明。",
+
+  "seed_repos": [
+    {"repo": "ollama/ollama",                              "category": "开源软件 / 模型运行时",        "npm": "ollama",  "pypi": "ollama"},
+    {"repo": "D4Vinci/Scrapling",                         "category": "开发工具 / 网页采集框架",      "pypi": "scrapling"},
+    {"repo": "anthropics/skills",                         "category": "文档 / Agent Skills 资源库"},
+    {"repo": "TauricResearch/TradingAgents",              "category": "开源软件 / 多智能体金融框架",  "pypi": "tradingagents"},
+    {"repo": "ghostty-org/ghostty",                       "category": "开源软件 / 终端模拟器"},
+    {"repo": "storytold/craft-anything",                  "category": "开发工具 / 软件理解与构建"},
+    {"repo": "deepseek-ai/dsh-superagent-prototype",      "category": "模型 / 智能体系统原型"},
+    {"repo": "Thysrael/Horizon",                          "category": "开发工具 / 资讯聚合"},
+    {"repo": "max-sixty/worktrunk",                       "category": "开发工具 / Git worktree CLI",  "crate": "worktrunk"},
+    {"repo": "shiyu-coder/Kronos",                        "category": "模型 / 金融时序基础模型"},
+    {"repo": "patch-gg/pixelfx",                          "category": "其他公开资源 / 像素效果素材"},
+    {"repo": "BryceYuuu/RUN",                             "category": "文档 / 公开资料手册"},
+    {"repo": "paipiange/nvzhuang",                        "category": "数据集 / 图像参考集"},
+    {"repo": "Pika-Labs/Pika-H3-Flex",                    "category": "模型 / 生成推理"}
+  ],
+  "_seed_repos_说明": "重点跟踪仓库，用于保证领域覆盖与成熟项目样本。npm/pypi/crate 只有在此显式登记时才被采信为关联包；未登记的仓库一律不推断包名对应关系。",
+
+  "_排序说明": "综合分 = ln(Stars+1)*2 + ln(Forks+1) + 8*(本周提交取 min(提交数,50)/50) + 6*(窗口内有正式Release) + 4*(Trending榜收录) + 3*(本周新建) 。分数用于排序，报告中逐条给出上调或下调理由。",
+  "weights": {
+    "stars": 2.0,
+    "forks": 1.0,
+    "commits": 8.0,
+    "release_in_window": 6.0,
+    "trending": 4.0,
+    "created_in_window": 3.0
+  }
+}
