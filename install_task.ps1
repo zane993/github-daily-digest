@@ -52,9 +52,9 @@ if (-not (Test-Path $PythonExe)) {
     throw "Python executable not found: $PythonExe"
 }
 
-Write-Host "Project : $projectDir"
-Write-Host "Python  : $PythonExe"
-Write-Host "Script  : $scriptPath"
+Write-Host "Project : configured"
+Write-Host "Python  : configured"
+Write-Host "Script  : run_daily.py"
 Write-Host "Time    : $Time daily"
 
 $arg = '"' + $scriptPath + '"'

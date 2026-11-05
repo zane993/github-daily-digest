@@ -108,9 +108,10 @@ def main(argv=None):
     p_md, p_html = out_dir / (stem + ".md"), out_dir / (stem + ".html")
     p_md.write_text(md, encoding="utf-8")
     p_html.write_text(htmldoc, encoding="utf-8")
-    log.info("已写出 %s (%d bytes)", p_md, p_md.stat().st_size)
-    log.info("已写出 %s (%d bytes)", p_html, p_html.stat().st_size)
-    print("OK|%s|%s|items=%d|limitations=%d" % (p_md, p_html, len(data["records"]), len(data["limitations"])))
+    log.info("已写出 %s (%d bytes)", p_md.name, p_md.stat().st_size)
+    log.info("已写出 %s (%d bytes)", p_html.name, p_html.stat().st_size)
+    print("OK|%s|%s|items=%d|limitations=%d"
+          % (p_md.name, p_html.name, len(data["records"]), len(data["limitations"])))
     return 0
 
 

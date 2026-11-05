@@ -55,6 +55,13 @@ python -m unittest discover -s tests
 
 运行日志写入 `logs/`。日志和生成报告默认不纳入版本控制。
 
+## 隐私与安全
+
+- 报告正文不会写入本机输出目录；命令行完成信息和安装任务输出只显示报告文件名或配置状态，不打印完整本机路径。
+- GitHub Token 只从环境变量读取；不要粘贴到配置文件、命令示例或公开日志。
+- `logs/` 和 `reports/` 已加入 `.gitignore`。日志用于本地排障，公开分享前仍应检查内容并删除机器特定信息。
+- HTML 报告只把带主机名的 HTTP(S) Markdown 链接渲染为可点击链接；脚本、文件和其他 URL scheme 会显示为普通文字。
+
 ## GitHub API Token（可选）
 
 公开 API 在未认证时有较低的请求额度。可在当前 PowerShell 会话中设置 `GITHUB_TOKEN` 后运行；程序只从环境变量读取 Token，不会将其写入报告：
